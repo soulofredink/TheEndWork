@@ -1,0 +1,97 @@
+{
+	"pages": [//pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "首页",
+				"enablePullDownRefresh": true
+				
+			}
+		},
+		{
+			"path": "pages/SignIn/SignIn",
+			"style": {
+				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/MyInfo/MyInfo",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path" : "pages/forgetPassword/forgetPassword",
+			"style" : 
+			{
+				"navigationBarTitleText": "找回密码"
+			}
+		},
+		{
+			"path" : "pages/SignUp/SignUp",
+			"style" : 
+			{
+				"navigationBarTitleText": "注册"
+			}
+		},
+		{
+			"path" : "pages/AboutMe/AboutMe",
+			"style" : 
+			{
+				"navigationBarTitleText" : "关于我们"
+			}
+		},
+		{
+			"path" : "pages/ProfileSet/ProfileSet",
+			"style" : 
+			{
+				"navigationBarTitleText" : "关于我们"
+			}
+		},
+		{
+			"path" : "pages/communication/communication",
+			"style" : 
+			{
+				"navigationBarTitleText" : "社区"
+			}
+		},
+		{
+			"path" : "pages/communicateDetails/communicateDetails",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		}
+
+	],
+	"tabBar": {
+		"color": "#000",
+		"selectedColor": "#ffe900",
+		"list": [
+			{
+				"pagePath": "pages/index/index",
+				"text": "咸鱼",
+				"iconPath": "/static/img/fish.png",
+				"selectedIconPath": "/static/img/selectedfish.png"
+			},
+			{
+				"pagePath": "pages/communication/communication",
+				"text":"交流",
+				"iconPath": "/static/img/comm.png",
+				"selectedIconPath": "/static/img/selectedcomm.png"
+			},
+			{
+				"pagePath": "pages/MyInfo/MyInfo",
+				"text": "我的",
+				"iconPath": "/static/img/user.png",
+				"selectedIconPath": "/static/img/selecteduser.png"
+			}
+		]
+	},
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarBackgroundColor": "#ffe900",
+		"backgroundColor": "#c3c3c3"
+	},
+	"uniIdRouter": {}
+}
