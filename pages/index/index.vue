@@ -72,7 +72,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, watch, watchEffect } from 'vue'
-import { onLoad } from '@dcloudio/uni-app'
+import { onLoad,onPullDownRefresh } from '@dcloudio/uni-app'
 import { useChatStore } from '../../store/chatStore'
 import { useUserStore } from '../../store/useUserStore'
 import { ServerURL,WebsocketURL } from '../../config'
@@ -92,6 +92,13 @@ const swiperHeight = ref(0)
 const bookList = ref([])
 const gameList = ref([])
 const lifeUtilList = ref([])
+onPullDownRefresh(()=>{
+	fetchBookData()
+	fetchGame()
+	fetchLifeUtil()
+	console.log("ok")
+	uni.stopPullDownRefresh()
+})
 // 生命周期
 onLoad(() => {
 	fetchBookData()
