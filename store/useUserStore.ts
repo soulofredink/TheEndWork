@@ -29,7 +29,7 @@ export const useUserStore=defineStore('user',{
 				data:JSON.stringify(card),
 				sslVerify: false,
 			})
-			console.log(res)
+			console.log(res);
 			const resVal = res.data as {code:number,message:string,data:any};
 			if(resVal.code == 200){
 				console.log('0k')

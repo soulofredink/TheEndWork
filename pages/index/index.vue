@@ -22,18 +22,20 @@
 			:style="{ height: swiperHeight + 'rpx' }">
 		    <swiper-item v-for="(item, index) in navList" :key="index">
 			<scroll-view scroll-y :style="{ height: swiperHeight + 'rpx' }">
-			  <view v-if="index === 0">1564551
+			  <scroll-view v-if="index === 0">
+				  <view v-for='item in list' :key="item.id"></view>
+			  </scroll-view>
+
+			  <view v-if="index === 1">
+				  
 			  </view>
 
-			  <view v-if="index === 1">2
-			  </view>
-
-			  <view v-if="index === 2">3
+			  <view v-if="index === 2">
+				  
 			  </view>
 			  </scroll-view>
 		  </swiper-item>
 		</swiper>
-	
   </view>
 </template>
 
@@ -43,7 +45,7 @@
 	let searchValue = ref("");
 	import {onMounted} from "vue"
 	import {onLoad} from '@dcloudio/uni-app'
-	let navList =ref(['推荐', '新发', '附近']) ;
+	let navList =ref(['图书', '游戏', '生活用品']) ;
 	let currentIndex=ref(0);
 	let systemInfo = uni.getSystemInfoSync();
 	let swiperHeight=ref(0);
@@ -81,9 +83,22 @@
 	function change(res){
 		console.log("change",res)
 	}
-
+	const socketTask = uni.connectSocket({
+	  url: 'wss://localhost:8443/websocket/2', 
+	  success: () => {
+	  	
+	  }
+	});
 	
+	socketTask.onOpen(()=>{
+		console.log("连接成功"),
+		socketTask.send({data:JSON.stringify({
+			receiver:1,
+			message:"你好",
+		})});
+	})
 </script>
+
 
 <style lang="scss" scoped>
 	page {

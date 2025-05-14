@@ -1,101 +1,11 @@
 <template>
 	<view class="main-container">
-		<scroll-view
-			class="chat-list" 
-			scroll-y 
-			:scroll-into-view="scrollId"
-			:scroll-with-animation="true"
-		>
-			<view
-				v-for="(msg, index) in messages" 
-				:key="msg.id"
-				:id="'msg'+index"
-				class="message-container"
-				:class="[msg.isMe ? 'me' : 'other']"
-			>
-				<image
-					v-if="!msg.isMe"
-					class="avatar"
-					src="/static/avatar-other.jpg"
-					mode="aspectFill"
-				/>
-				<view class="bubble">
-					<text>{{ msg.content }}</text>
-				</view>
-				<image
-					v-if="msg.isMe"
-					class="avatar-me"
-					src="/static/avatar-me.jpg"
-					mode="aspectFill"
-				/>
-			</view>
-		</scroll-view>
-		<view class="input-area">
-			<input 
-				class="input"
-				v-model="inputText"
-				placeholder="输入消息"
-				confirm-type="send"
-				@confirm="sendMessage"
-			/>
-			<button class="send-btn" @click="sendMessage">发送</button>
-		</view>
+		
 	</view>
 </template>
 
 <script setup lang="ts">
-	import {onLoad} from '@dcloudio/uni-app'
-	import { reactive,ref,nextTick } from 'vue'
-	interface Message {
-	  id: number
-	  content: string
-	  time: number
-	  isMe: boolean
-	}
-	const username = ref('匿名')
-	let scrollId=ref("")
-	const inputText = ref('')
-	onLoad((options)=>{
-		username.value = decodeURIComponent(options.username || '')
-		uni.setNavigationBarTitle({
-			title:username.value
-		})
-	})
-	const messages = reactive<Message[]>([
-	  {
-	    id: 1,
-	    content: '你好',
-	    time: Date.now() - 3600*1000,
-	    isMe: false
-	  },
-	  {
-	    id: 2,
-	    content: '123',
-	    time: Date.now() - 1800*1000,
-	    isMe: true
-	  }
-	])
-	const sendMessage=()=>{
-		//移除首尾空白字符
-		if (!inputText.value.trim()) return
-		const newMsg= {
-		  id: Date.now(),
-		  content: inputText.value.trim(),
-		  time: Date.now(),
-		  isMe: true
-		}
-		messages.push(newMsg)
-		inputText.value = ''
-		//scrollToBottom()
-	}
-	// // 滚动到底部
-	// const scrollToBottom = () => {
-	//   nextTick(() => {
-	//     if(messages.length > 0) {
-	//       scrollId.value = 'msg' + (messages.length - 1)
-	//     }
-	//   })
-	// }
+	
 </script>
 
 <style lang="scss" scoped>

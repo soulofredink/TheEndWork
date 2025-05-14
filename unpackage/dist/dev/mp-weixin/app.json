@@ -1,0 +1,50 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/SignIn/SignIn",
+    "pages/MyInfo/MyInfo",
+    "pages/forgetPassword/forgetPassword",
+    "pages/SignUp/SignUp",
+    "pages/AboutMe/AboutMe",
+    "pages/ProfileSet/ProfileSet",
+    "pages/userList/userList",
+    "pages/communicateDetails/communicateDetails",
+    "pages/sell/sell"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarBackgroundColor": "#ffe900",
+    "backgroundColor": "#c3c3c3"
+  },
+  "tabBar": {
+    "color": "#000",
+    "selectedColor": "#ffe900",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "咸鱼",
+        "iconPath": "/static/img/fish.png",
+        "selectedIconPath": "/static/img/selectedfish.png"
+      },
+      {
+        "pagePath": "pages/sell/sell",
+        "text": "出售",
+        "iconPath": "/static/img/cell.png",
+        "selectedIconPath": "/static/img/selectedcell.png"
+      },
+      {
+        "pagePath": "pages/userList/userList",
+        "text": "交流",
+        "iconPath": "/static/img/comm.png",
+        "selectedIconPath": "/static/img/selectedcomm.png"
+      },
+      {
+        "pagePath": "pages/MyInfo/MyInfo",
+        "text": "我的",
+        "iconPath": "/static/img/user.png",
+        "selectedIconPath": "/static/img/selecteduser.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

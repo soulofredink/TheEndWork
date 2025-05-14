@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-	import {ref,reactive, onMounted} from 'vue'
+	import {ref,reactive, onMounted, computed} from 'vue'
 	import { useUserStore } from '../../store/useUserStore'
 	import { storeToRefs } from 'pinia'
 	import {onLoad} from '@dcloudio/uni-app'
@@ -126,7 +126,7 @@
 		 	username.value = userInfo.username;
 		 	id.value = userInfo.id;
 		 }else{
-		 	username.value = userStore.currentUser.username
+		 	username.value = userStore.currentUser?.username || ""
 			id.value = userStore.currentUser.id;
 		 }
 	})

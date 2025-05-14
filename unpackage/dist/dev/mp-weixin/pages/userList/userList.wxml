@@ -1,0 +1,1 @@
+<view class="container data-v-b2da3ca3"><scroll-view class="userList data-v-b2da3ca3"><view wx:for="{{a}}" wx:for-item="user" class="user-item data-v-b2da3ca3" bindtap="{{b}}"><view class="header data-v-b2da3ca3"><image class="img data-v-b2da3ca3" src="{{user.a}}" mode="aspectFill"/></view><view class="username data-v-b2da3ca3">{{user.b}}</view></view></scroll-view></view>

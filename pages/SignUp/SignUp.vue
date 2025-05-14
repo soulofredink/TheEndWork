@@ -164,7 +164,7 @@ import useDateTime from '../hooks/useDateTime'
 				  success: (res) => {
 				    if (res.confirm) {
 				      uni.request({
-				      	url:"https://localhost:8443/sendEmail/"+account.email,
+				      	url:"http://localhost:8080/sendEmail/"+account.email,
 						method:'GET',
 						success: (response)=>{
 							if(response.statusCode == 200){
@@ -209,7 +209,7 @@ import useDateTime from '../hooks/useDateTime'
 		  //成功
 		  account.createDateTime = new Date(formattedDate());
 		  uni.request({
-			  url: "https://localhost:8443/signup",
+			  url: "http://localhost:8080/signup",
 			  method:'POST',
 			  data: JSON.stringify(account),
 			  success: (Response)=>{
@@ -264,7 +264,7 @@ import useDateTime from '../hooks/useDateTime'
 
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="scss" >
 //引入字体
   page {
     margin: 0;
