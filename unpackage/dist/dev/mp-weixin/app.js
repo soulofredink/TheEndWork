@@ -7,21 +7,19 @@ if (!Math) {
   "./pages/MyInfo/MyInfo.js";
   "./pages/forgetPassword/forgetPassword.js";
   "./pages/SignUp/SignUp.js";
-  "./pages/AboutMe/AboutMe.js";
   "./pages/ProfileSet/ProfileSet.js";
-  "./pages/userList/userList.js";
+  "./pages/communication/communication.js";
   "./pages/communicateDetails/communicateDetails.js";
   "./pages/sell/sell.js";
 }
 const _sfc_main = {
   onLaunch: function() {
-    common_vendor.index.__f__("log", "at App.vue:4", "App Launch");
   },
   onShow: function() {
-    common_vendor.index.__f__("log", "at App.vue:8", "App Show");
+    common_vendor.index.__f__("log", "at App.vue:23", "App Show");
   },
   onHide: function() {
-    common_vendor.index.__f__("log", "at App.vue:11", "App Hide");
+    common_vendor.index.__f__("log", "at App.vue:26", "App Hide");
   }
 };
 function createApp() {

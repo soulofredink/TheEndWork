@@ -69,7 +69,8 @@
   background: #fff;
   border-radius: 16rpx;
   padding: 0 24rpx;
-  margin-bottom: 12rpx;
+  margin-bottom: 50rpx;
+  margin-top: 30rpx;
 }
 .section .section-title.data-v-35112905 {
   font-size: 32rpx;
@@ -132,4 +133,23 @@
   text-align: center;
   line-height: 1.4;
   white-space: nowrap;
+}
+.logout-btn-container.data-v-35112905 {
+  margin: 100rpx 20rpx 0;
+  padding-bottom: 0rpx;
+}
+.logout-btn-container .logout-btn.data-v-35112905 {
+  background-color: #ffe900;
+  color: black;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  height: 88rpx;
+  line-height: 88rpx;
+  transition: opacity 0.2s;
+}
+.logout-btn-container .logout-btn.data-v-35112905::after {
+  border: none;
+}
+.logout-btn-container .logout-btn.data-v-35112905:active {
+  opacity: 0.8;
 }

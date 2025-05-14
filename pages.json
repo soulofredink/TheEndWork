@@ -35,13 +35,6 @@
 			}
 		},
 		{
-			"path" : "pages/AboutMe/AboutMe",
-			"style" : 
-			{
-				"navigationBarTitleText" : "关于我们"
-			}
-		},
-		{
 			"path" : "pages/ProfileSet/ProfileSet",
 			"style" : 
 			{
@@ -49,7 +42,7 @@
 			}
 		},
 		{
-			"path" : "pages/userList/userList",
+			"path" : "pages/communication/communication",
 			"style" : 
 			{
 				"navigationBarTitleText" : "社区"
@@ -83,12 +76,12 @@
 			},
 			{
 				"pagePath": "pages/sell/sell",
-				"text":"出售",
+				"text": "出售",
 				"iconPath": "/static/img/cell.png",
 				"selectedIconPath": "/static/img/selectedcell.png"
 			},
 			{
-				"pagePath": "pages/userList/userList",
+				"pagePath": "pages/communication/communication",
 				"text":"交流",
 				"iconPath": "/static/img/comm.png",
 				"selectedIconPath": "/static/img/selectedcomm.png"
@@ -99,6 +92,7 @@
 				"iconPath": "/static/img/user.png",
 				"selectedIconPath": "/static/img/selecteduser.png"
 			}
+			
 		]
 	},
 	"globalStyle": {
@@ -106,6 +100,5 @@
 		"navigationBarBackgroundColor": "#ffe900",
 		"backgroundColor": "#c3c3c3"
 	},
-	
 	"uniIdRouter": {}
 }

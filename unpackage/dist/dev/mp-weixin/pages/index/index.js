@@ -1,5 +1,7 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const store_chatStore = require("../../store/chatStore.js");
+const store_useUserStore = require("../../store/useUserStore.js");
 if (!Array) {
   const _easycom_uni_search_bar2 = common_vendor.resolveComponent("uni-search-bar");
   _easycom_uni_search_bar2();
@@ -11,13 +13,16 @@ if (!Math) {
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "index",
   setup(__props) {
+    const chatStore = store_chatStore.useChatStore();
+    const userStore = store_useUserStore.useUserStore();
     let searchValue = common_vendor.ref("");
-    let navList = common_vendor.ref(["图书", "游戏", "生活用品"]);
+    let navList = common_vendor.ref(["推荐", "新发", "附近"]);
     let currentIndex = common_vendor.ref(0);
     common_vendor.index.getSystemInfoSync();
     let swiperHeight = common_vendor.ref(0);
     common_vendor.onLoad(() => {
       const systemInfo2 = common_vendor.index.getWindowInfo();
+      common_vendor.index.__f__("log", "at pages/index/index.vue:72", "index:", userStore.meta.isLoggedin);
       swiperHeight.value = systemInfo2.windowHeight - 50;
     });
     function switchTab(index) {
@@ -33,25 +38,41 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       });
     }
     function input(res) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:76", "input--", res);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:94", "input--", res);
     }
     function cancel(res) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:80", "cacel", res);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:98", "cacel", res);
     }
     function change(res) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:84", "change", res);
+      common_vendor.index.__f__("log", "at pages/index/index.vue:102", "change", res);
     }
-    const socketTask = common_vendor.index.connectSocket({
-      url: "wss://localhost:8443/websocket/2",
-      success: () => {
+    const test = (contactId) => {
+      chatStore.createSession(contactId);
+      const chat = common_vendor.ref({
+        id: "",
+        username: "",
+        avatar: ""
+      });
+      try {
+        const res = common_vendor.index.request({
+          url: `https://192.168.43.78/${contactId}`,
+          method: "POST",
+          data: ""
+        });
+        if (res.statusCode === 200) {
+          common_vendor.index.__f__("log", "at pages/index/index.vue:122", "用户信息获取成功：", res);
+          chat.value.id = res.data.id;
+          chat.value.avatar = res.data.img;
+          chat.value.username = res.data.username;
+        }
+      } catch (error) {
+        common_vendor.index.__f__("error", "at pages/index/index.vue:128", "用户信息获取失败:", error);
       }
-    });
-    socketTask.onOpen(() => {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:94", "连接成功"), socketTask.send({ data: JSON.stringify({
-        receiver: 1,
-        message: "你好"
-      }) });
-    });
+      chatStore.updatereceiverId(contactId);
+      common_vendor.index.navigateTo({
+        url: `/pages/communicateDetails/communicateDetails?id=${chat.value.id}&username=${chat.value.username}&avatar=${chat.value.avatar}`
+      });
+    };
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(search),
@@ -75,17 +96,14 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           return common_vendor.e({
             a: index === 0
           }, index === 0 ? {
-            b: common_vendor.f(_ctx.list, (item2, k1, i1) => {
-              return {
-                a: item2.id
-              };
-            })
+            b: common_vendor.o(($event) => test("1"), index),
+            c: common_vendor.o(($event) => test("3"), index)
           } : {}, {
-            c: index === 1
+            d: index === 1
           }, index === 1 ? {} : {}, {
-            d: index === 2
+            e: index === 2
           }, index === 2 ? {} : {}, {
-            e: index
+            f: index
           });
         }),
         i: common_vendor.unref(swiperHeight) + "rpx",

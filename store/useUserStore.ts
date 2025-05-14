@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { User } from '../static/interface/User'
-
+import { ServerURL } from '../config';
 export const useUserStore=defineStore('user',{
 	state:()=>({
 		currentUser:null as User | null,//创建一个对象实例
@@ -21,7 +21,7 @@ export const useUserStore=defineStore('user',{
 	actions:{
 		async Login(card:{username:string,password:string}){
 			const res =  await uni.request({
-			    url:"https://localhost:8443/signin",
+			    url:ServerURL+"/signin",
 				method:'POST',
 				header:{
 					'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ export const useUserStore=defineStore('user',{
 				data:JSON.stringify(card),
 				sslVerify: false,
 			})
-			console.log(res);
+			console.log(res)
 			const resVal = res.data as {code:number,message:string,data:any};
 			if(resVal.code == 200){
 				console.log('0k')

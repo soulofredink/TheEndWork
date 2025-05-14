@@ -41,7 +41,6 @@
 	  </view>
 	</view>
 
-    <!-- 设置列表 -->
     <view class="section">
       <view class="section-title">账户设置</view>
       <view class="list">
@@ -67,18 +66,28 @@
         </view>
       </view>
     </view>
+	<view class="logout-btn-container">
+	  <button 
+	    class="logout-btn"
+	    @click="handleLogout"
+	  >
+	    退出登录
+	  </button>
+	</view>
   </view>
 </template>
 
 <script setup lang="ts">
-	import {ref,reactive, onMounted, computed} from 'vue'
+	import {ref,reactive, onMounted} from 'vue'
 	import { useUserStore } from '../../store/useUserStore'
 	import { storeToRefs } from 'pinia'
 	import {onLoad} from '@dcloudio/uni-app'
 	import { User } from '../../static/interface/User'
+	import { useChatStore } from '../../store/chatStore'
 	let username = ref("请登录");
 	let id = ref('');
 	let userStore = useUserStore()
+	let chatStore=useChatStore()
 	const services = reactive([
 	  { id:1,icon: 'shop', color: '#00C853', label: '我发布的', path: '/pages' },
 	  { id:2,icon: 'cart', color: '#0091EA', label: '我卖出的', path: '/pages' },
@@ -89,10 +98,12 @@
 	  { id:2,icon: 'notification', color: '#666', label: '消息通知', path: '/pages/notify' },
 	  { id:3,icon: 'clear', color: '#666', label: '清理缓存', path: 'clearCache' }
 	])
-
+	
 	
 	const toProfile=(path:any)=>{
-		if(!userStore.isLogin){
+		//console.log("info::",userStore.meta.isLoggedin)
+		//console.log(userStore.currentUser.id)
+		if(!userStore.meta.isLoggedin){
 			uni.redirectTo({url:"/pages/SignIn/SignIn"})
 		}else  {
 		  uni.navigateTo({ url: path })
@@ -113,23 +124,46 @@
 				// 执行清除缓存逻辑
 				uni.removeStorageSync("token")
 				uni.removeStorageSync("userInfo")
+				chatStore.clearLocalData()
 			  }
 			}
 		  })
 	  }
 	}
 	onLoad(()=>{
-		 if(uni.getStorageSync("token")){
-		 	console.log()
-		 	userStore.meta.isLoggedin = true;
-		 	let userInfo = uni.getStorageSync('userInfo') as User
-		 	username.value = userInfo.username;
-		 	id.value = userInfo.id;
-		 }else{
-		 	username.value = userStore.currentUser?.username || ""
-			id.value = userStore.currentUser.id;
-		 }
+			const t=uni.getStorageSync("token")
+			console.log(t)
+			if(t==true){
+				console.log(123)
+				userStore.meta.isLoggedin = true;
+				let userInfo = uni.getStorageSync('userInfo') as User
+				userStore.currentUser= uni.getStorageSync('userInfo') as User
+				username.value = userInfo.username;
+				id.value = userInfo.id;
+			}else{
+				username.value = userStore.currentUser.username
+				id.value = userStore.currentUser.id;
+			}
 	})
+	
+	const handleLogout = () => {
+	  uni.showModal({
+	    title: '确认退出',
+	    content: '确定要退出当前账号吗？',
+	    success: (res) => {
+	      if (res.confirm) {
+	        uni.removeStorageSync("token")
+	        uni.removeStorageSync("userInfo")
+	        //chatStore.clearLocalData()
+	        // 重置用户状态
+	        userStore.$reset()
+	        uni.reLaunch({
+	          url: '/pages/SignIn/SignIn'
+	        })
+	      }
+	    }
+	  })
+	}
 </script>
 
 <style lang="scss" scoped>
@@ -187,7 +221,8 @@
   background: #fff;
   border-radius: 16rpx;
   padding: 0 24rpx;
-  margin-bottom: 12rpx;
+  margin-bottom: 50rpx;
+  margin-top: 30rpx;
   .section-title {
     font-size: 32rpx;
     font-weight: 500;
@@ -263,6 +298,29 @@
         line-height: 1.4;
         white-space: nowrap;
       }
+    }
+  }
+}
+// 在 style 最后添加
+.logout-btn-container {
+  margin: 100rpx 20rpx 0;
+  padding-bottom: 0rpx;
+
+  .logout-btn {
+    background-color: #ffe900;
+    color: black;
+    border-radius: 50rpx;
+    font-size: 32rpx;
+    height: 88rpx;
+    line-height: 88rpx;
+    transition: opacity 0.2s;
+    
+    &::after {
+      border: none;
+    }
+    
+    &:active {
+      opacity: 0.8;
     }
   }
 }

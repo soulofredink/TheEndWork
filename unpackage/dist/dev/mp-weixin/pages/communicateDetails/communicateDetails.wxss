@@ -49,6 +49,8 @@
   margin-left: 20rpx;
   order: 1;
   border-radius: 10rpx;
+  padding: 18rpx 24rpx;
+  word-break: break-word;
 }
 .message-container.me .avatar-me.data-v-748d2dfb {
   order: 2;
@@ -61,13 +63,15 @@
   background: #ffffff;
   margin-left: 20rpx;
   border-radius: 10rpx;
+  padding: 18rpx 24rpx;
+  word-break: break-word;
 }
 .message-container.other .avatar.data-v-748d2dfb {
   order: -1;
 }
 .avatar.data-v-748d2dfb, .avatar-me.data-v-748d2dfb {
-  width: 40rpx;
-  height: 40rpx;
+  width: 80rpx;
+  height: 80rpx;
   border-radius: 50%;
   flex-shrink: 0;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);

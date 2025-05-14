@@ -5,9 +5,8 @@
     "pages/MyInfo/MyInfo",
     "pages/forgetPassword/forgetPassword",
     "pages/SignUp/SignUp",
-    "pages/AboutMe/AboutMe",
     "pages/ProfileSet/ProfileSet",
-    "pages/userList/userList",
+    "pages/communication/communication",
     "pages/communicateDetails/communicateDetails",
     "pages/sell/sell"
   ],
@@ -33,7 +32,7 @@
         "selectedIconPath": "/static/img/selectedcell.png"
       },
       {
-        "pagePath": "pages/userList/userList",
+        "pagePath": "pages/communication/communication",
         "text": "交流",
         "iconPath": "/static/img/comm.png",
         "selectedIconPath": "/static/img/selectedcomm.png"

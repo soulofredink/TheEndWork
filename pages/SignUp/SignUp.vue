@@ -56,11 +56,11 @@
 </template>
 
 <script setup lang="ts">
-import { EventHandler } from 'react';
+import { ServerURL } from '../../config';
 import { ref,reactive } from 'vue';
 import useShowHidden from './hooks/useShowHidden'
-import useCheck from '../hooks/useCheck'
-import useDateTime from '../hooks/useDateTime'
+import useCheck from '../../hooks/useCheck'
+import useDateTime from '../../hooks/useDateTime'
   //校验数据
   let {account,tryPassword,code,inputCode,isVaildUsername,isVaildPassword,isVaildEmail,isVaildCode } = useCheck();
   //日期相关
@@ -164,7 +164,7 @@ import useDateTime from '../hooks/useDateTime'
 				  success: (res) => {
 				    if (res.confirm) {
 				      uni.request({
-				      	url:"http://localhost:8080/sendEmail/"+account.email,
+				      	url:ServerURL+"/sendEmail/"+account.email,
 						method:'GET',
 						success: (response)=>{
 							if(response.statusCode == 200){
@@ -209,7 +209,7 @@ import useDateTime from '../hooks/useDateTime'
 		  //成功
 		  account.createDateTime = new Date(formattedDate());
 		  uni.request({
-			  url: "http://localhost:8080/signup",
+			  url: "http://192.168.43.78:8080/signup",
 			  method:'POST',
 			  data: JSON.stringify(account),
 			  success: (Response)=>{
@@ -264,7 +264,7 @@ import useDateTime from '../hooks/useDateTime'
 
 </script>
 
-<style scoped lang="scss" >
+<style scoped lang="scss">
 //引入字体
   page {
     margin: 0;

@@ -1,1 +1,1 @@
-{"version":3,"file":"assets.js","sources":["D:/static/logo.png"],"sourcesContent":["export default \"/static/logo.png\""],"names":[],"mappings":";AAAA,MAAe,aAAA;;"}
+{"version":3,"file":"assets.js","sources":["D:/static/avatar-other.jpg","D:/static/avatar-me.jpg"],"sourcesContent":["export default \"/static/avatar-other.jpg\"","export default \"/static/avatar-me.jpg\""],"names":[],"mappings":";AAAA,MAAe,aAAA;ACAf,MAAe,aAAA;;;"}

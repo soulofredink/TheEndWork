@@ -1,5 +1,6 @@
 "use strict";
 const common_vendor = require("../common/vendor.js");
+const config = require("../config.js");
 const useUserStore = common_vendor.defineStore("user", {
   state: () => ({
     currentUser: null,
@@ -20,7 +21,7 @@ const useUserStore = common_vendor.defineStore("user", {
   actions: {
     async Login(card) {
       const res = await common_vendor.index.request({
-        url: "https://localhost:8443/signin",
+        url: config.url0 + "/signin",
         method: "POST",
         header: {
           "Content-Type": "application/json"

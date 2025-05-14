@@ -24,20 +24,10 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     }
     function onBlur() {
       isFocus.value = false;
+      isVaild("description");
     }
-    const good = common_vendor.reactive({
-      userId: common_vendor.computed(() => {
-        var _a;
-        return ((_a = userStore.currentUser) == null ? void 0 : _a.id) || "";
-      }),
-      name: "",
-      price: null,
-      description: "",
-      image: "",
-      type: ""
-    });
     common_vendor.watch(good, (New) => {
-      common_vendor.index.__f__("log", "at pages/sell/sell.vue:86", New);
+      common_vendor.index.__f__("log", "at pages/sell/sell.vue:82", New);
     }, { deep: true });
     const itemList = ["图书", "游戏", "生活用品"];
     function chooseType() {
@@ -87,6 +77,8 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         if (!good.image) {
           return common_vendor.index.showToast({ title: "请上传商品图片", icon: "none" });
         }
+        good.userId = userStore.currentUser.id;
+        common_vendor.index.__f__("log", "at pages/sell/sell.vue:141", good.userId);
         common_vendor.index.showLoading({ title: "提交中..." });
         setTimeout(() => {
           common_vendor.index.hideLoading();
@@ -106,7 +98,6 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         current: 0
       });
     }
-    let rules;
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: isText.value
@@ -122,42 +113,44 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       } : {}, {
         g: common_vendor.o(addImage),
         h: !isText.value ? 1 : "",
-        i: good.name,
-        j: common_vendor.o(($event) => good.name = $event.detail.value),
-        k: common_vendor.p({
+        i: common_vendor.o(($event) => _ctx.isVaild("name")),
+        j: _ctx.good.name,
+        k: common_vendor.o(($event) => _ctx.good.name = $event.detail.value),
+        l: common_vendor.p({
           label: "名称",
           name: "name"
         }),
-        l: good.price,
-        m: common_vendor.o(($event) => good.price = $event.detail.value),
-        n: common_vendor.p({
+        m: common_vendor.o(($event) => _ctx.isVaild("price")),
+        n: _ctx.good.price,
+        o: common_vendor.o(($event) => _ctx.good.price = $event.detail.value),
+        p: common_vendor.p({
           label: "价格",
           name: "price"
         }),
-        o: common_vendor.o(chooseType),
-        p: good.type,
-        q: common_vendor.o(($event) => good.type = $event.detail.value),
-        r: common_vendor.p({
+        q: common_vendor.o(chooseType),
+        r: common_vendor.o(($event) => _ctx.isVaild("type")),
+        s: _ctx.good.type,
+        t: common_vendor.o(($event) => _ctx.good.type = $event.detail.value),
+        v: common_vendor.p({
           required: true,
           name: "type",
           label: "类型"
         }),
-        s: common_vendor.o(changeIsFocus),
-        t: common_vendor.o(onBlur),
-        v: common_vendor.unref(isFocus) ? 1 : "",
-        w: good.description,
-        x: common_vendor.o(($event) => good.description = $event.detail.value),
-        y: common_vendor.t(good.description.length),
-        z: common_vendor.p({
+        w: common_vendor.o(changeIsFocus),
+        x: common_vendor.o(onBlur),
+        y: common_vendor.unref(isFocus) ? 1 : "",
+        z: _ctx.good.description,
+        A: common_vendor.o(($event) => _ctx.good.description = $event.detail.value),
+        B: common_vendor.t(_ctx.good.description.length),
+        C: common_vendor.p({
           required: true,
           name: "description",
           label: "描述"
         }),
-        A: common_vendor.p({
-          modelValue: good,
-          rules: common_vendor.unref(rules)
+        D: common_vendor.p({
+          modelValue: _ctx.good
         }),
-        B: common_vendor.o(submitForm)
+        E: common_vendor.o(submitForm)
       });
     };
   }

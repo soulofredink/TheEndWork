@@ -1,11 +1,11 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
-const pages_hooks_useCheck = require("../hooks/useCheck.js");
+const hooks_useCheck = require("../../hooks/useCheck.js");
 const store_useUserStore = require("../../store/useUserStore.js");
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "SignIn",
   setup(__props) {
-    pages_hooks_useCheck.useCheck();
+    hooks_useCheck.useCheck();
     let isPassword = common_vendor.ref(true);
     let isView = common_vendor.ref(false);
     let isRemeber = common_vendor.ref(false);
@@ -47,10 +47,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           password: password.value
         });
         if (success) {
+          common_vendor.index.setStorageSync("token", true);
           if (isRemeber.value) {
-            common_vendor.index.setStorageSync("token", true);
             common_vendor.index.setStorageSync("userInfo", userStore.currentUser);
-          }
+          } else
+            common_vendor.index.setStorageSync("token", false);
           await common_vendor.nextTick$1();
           common_vendor.index.switchTab({ url: "/pages/MyInfo/MyInfo" });
         }

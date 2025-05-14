@@ -17,20 +17,20 @@
 
 		<!-- 商品信息表单 -->
 		<view class="goods-info">
-			<uni-forms :modelValue="good" :rules="rules">
+			<uni-forms :modelValue="good">
 				<uni-forms-item label="名称" name="name">
-					<input type="text" v-model="good.name" placeholder="请输入商品名称" />
+					<input type="text" v-model="good.name" placeholder="请输入商品名称" @blur="isVaild('name')"/>
 				</uni-forms-item>
 				<uni-forms-item label="价格" name="price">
-					<input type="text" v-model="good.price" placeholder="请输入价格" />
+					<input type="text" v-model="good.price" placeholder="请输入价格" @blur="isVaild('price')"/>
 				</uni-forms-item>
 				<uni-forms-item required name="type" label="类型">
-					<input  v-model="good.type" placeholder="商品类型" @tap="chooseType" readonly/>
+					<input  v-model="type" placeholder="商品类型" @tap="chooseType" @blur="isVaild('type')" readonly/>
 				</uni-forms-item>
 				<uni-forms-item required name="description" label="描述" >
 					<textarea 
 					      v-model="good.description"
-					      placeholder="请输入商品描述（255字以内）"
+					      placeholder="请输入商品描述（140字以内）"
 					      placeholder-style="color: #999;"
 					      auto-height
 						  @focus="changeIsFocus"
@@ -39,10 +39,11 @@
 						        'description-box': true,
 						        'description-focus': isFocus
 						      }"
+						
 					    />
 					    <!-- 字数统计 -->
 					    <view class="word-count">
-					      {{ good.description.length }}/250
+					      {{ good.description.length }}/140
 					    </view>
 				</uni-forms-item>
 			</uni-forms>
@@ -54,43 +55,97 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref,watch } from 'vue';
-import { useUserStore } from '../../store/useUserStore';
-
-
+import { computed, reactive, ref,watch, watchEffect } from 'vue'
+import { useUserStore } from '../../store/useUserStore'
+import {onLoad} from '@dcloudio/uni-app'
+import {User} from "../../static/interface/User"
+import { Goods } from '../../static/interface/goods'
+import { ServerURL,WebsocketURL } from '../../config'
+enum GOODS_TYPE {
+	BOOK= 0,
+	GAME=1,
+	LIFE_UTIL=2,
+}
+let isType = ref(false)
+let isName = ref(false)
+let isPrice = ref(false)
+let isDescription = ref(false)
+const good : Goods = reactive({
+  userId:"",                 // computed(() => userStore.currentUser?.id || ""),
+  name: "", 
+  price: null,
+  description: "",
+  image: "",
+  type:null,
+})
+let type = ref("")
 const userStore = useUserStore();
 const isText = ref(true);
 const src = ref("");
 const formRef = ref();
 let isFocus = ref(false)
+//检测逻辑变量
+function showError(title:string){
+	uni.showToast({
+		title,
+		icon:"none",
+		duration:3000,
+	})
+}
+function isVaild(Type:string){
+	switch(Type){
+		case "type":
+		if(type.value != '游戏' && type.value != '图书' && type.value != '生活用品'){
+			showError("商品类型错误")
+			isType.value = false
+		}else{
+			isType.value = true
+		}
+		break
+		case "name":
+		if(good.name == '' || good.name.length > 20){
+			showError("商品名字长度1-20")
+			isName.value = false
+		}else{
+			isName.value = true
+		}
+		break;
+		case 'price':
+		const pricePattern = /(^[1-9]\d*(\.\d{1,2})?$)|(^0(\.\d{1,2})?$)/
+		if(!pricePattern.test(good.price)){
+			showError("价钱格式有误")
+			isPrice.value = false
+		}else{
+			isPrice.value = true
+		}
+		break;
+		case 'description':
+		if(good.description.length < 12 || good.description.length > 140){
+			showError("商品介绍长度有误(12-144)")
+			isDescription.value = false
+		}else{
+			isDescription.value = true
+		}
+		break;
+	}
+}
 
-	
 function changeIsFocus(){
 	isFocus.value = true;
 }
 
 	
 function onBlur(){
-	isFocus.value = false;
+	isFocus.value = false
+	isVaild("description")
 }
-const good = reactive({
-  userId: computed(() => userStore.currentUser?.id || ""),
-  name: "", 
-  price: null,
-  description: "",
-  image: "",
-  type:"",
-})
 
-watch(good,(New)=>{
-	console.log(New)
-},{deep:true})
 const itemList = ["图书","游戏","生活用品"]
 function chooseType(){
 	uni.showActionSheet({
 		itemList,
 		success: (res) => {
-			good.type = itemList[res.tapIndex]; 
+			type.value = itemList[res.tapIndex]; 
 		}
 	})
 }
@@ -134,30 +189,62 @@ function deleteImage() {
 
 // 提交表单
 async function submitForm() {
-	try {
-		await formRef.value.validate();
-		
-		if (!good.image) {
-			return uni.showToast({ title: '请上传商品图片', icon: 'none' });
-		}
-
-		// TODO: 调用提交接口
-		
-		uni.showLoading({ title: '提交中...' });
-		
-		// 模拟接口调用
-		setTimeout(() => {
-			uni.hideLoading();
-			uni.showToast({ title: '发布成功' });
-			setTimeout(() => uni.navigateBack(), 1500);
-		}, 1000);
-
-	} catch (err) {
+	if(!isName || !isPrice || !isType || !isDescription){
 		uni.showToast({
-			title: '请填写完整信息',
-			icon: 'none'
-		});
+			title:"输入项有误,请点击每项并退出焦点查看错误原因",
+			icon:"none",
+			duration:3000,
+		})
+		return
 	}
+		
+	if (!good.image) {
+		return uni.showToast({ title: '请上传商品图片', icon: 'none' });
+	}
+	uni.showLoading({
+		title: "正在发布中...."
+	})
+	good.userId=userStore.currentUser.id;
+	//获得图片的服务器URL
+	try{
+		const res = await uploadToServer(good.image)
+		good.image = res;
+	}catch(err){
+		console.log(err)
+	}
+	if(type.value == "图书"){
+		good.type = GOODS_TYPE.BOOK
+	}else if(type.value == "游戏"){
+		good.type = GOODS_TYPE.GAME
+	}else{
+		good.type = GOODS_TYPE.LIFE_UTIL
+	}
+	uni.request({
+		url: ServerURL + "/sending/goods",
+		method:'POST',
+		header:{
+			'Content-Type': 'application/json'
+		},
+		data:JSON.stringify(good),
+		success: (res) => {
+			uni.hideLoading()
+			if(res.statusCode == 200){
+				uni.showModal({
+				  title:"发布成功",
+				  confirmText:"确认"
+				})
+				
+				isText.value = true;
+				src.value = "";
+				good.image = "";
+				good.name = "";
+				good.price = null;
+				good.type = null;
+				type.value = "";
+				good.description = "";
+			}
+		}
+	})
 }
 
 // 点击图片预览
@@ -167,76 +254,26 @@ function handleImageTap() {
 		current: 0
 	});
 }
+//上传图像到服务器并获得图片访问地址
 const uploadToServer = async (filePath:string) => {
 	  const {statusCode,data} = await uni.uploadFile({
-	      url:"http://192.168.43.78:8080/"+good.type,
+	      url:"http://192.168.43.78:8080/" + type.value,
 	      filePath: filePath, 
 	      name:'file',     
 	  })
 	  if (statusCode === 200) {
-		console.log("1111")
-	    return data; 
+		let res = JSON.parse(data)
+	    return res.data; 
+	  }else{
+		  uni.showToast({
+		  	title:"图片上传失败"
+		  })
+		  throw new Error('上传失败');
 	  }
-	  throw new Error('上传失败');
 }
-let rules: {
-	// 对name字段进行必填验证
-	name: {
-		// name 字段的校验规则
-		rules:[
-			// 校验 name 不能为空
-			{
-				required: true,
-				errorMessage: '请填写名称',
-			},
-			// 对name字段进行长度验证
-			{
-				minLength: 1,
-				maxLength: 20,
-				errorMessage: '{label}长度在 {minLength} 到 {maxLength} 个字符',
-			}
-		],
-		// 当前表单域的字段中文名，可不填写
-		label:'姓名',
-		validateTrigger:'submit'
-	},
-	price: {
-		rules:[
-			{
-				required: true,
-				errorMessage: '请填写价格',
-			},
-		],
-		label:'价格',
-		validateTrigger:'submit'
-	},
-	type: {
-		rules:[
-			{
-				required: true,
-				errorMessage: '请选择类型',
-			},
-		],
-		label:'类型',
-		validateTrigger:'submit'
-	},
-	description: {
-		rules:[
-			{
-				required: true,
-				errorMessage: '请填写你的商品介绍',
-			},
-			{
-				minLength: 12,
-				maxLength: 140,
-				errorMessage: '{label}长度在 {minLength} 到 {maxLength} 个字符',
-			}
-		],
-		
-		label:'描述',
-		validateTrigger:'submit'
-	}
-}
+onLoad(()=>{
+	userStore.currentUser= uni.getStorageSync('userInfo') as User
+})
 </script>
 
 <style lang="scss" scoped>

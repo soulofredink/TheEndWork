@@ -1,5 +1,6 @@
 import App from './App'
 import * as Pinia from 'pinia';
+import websocketUtil from './script/webSocket';
 
 // #ifndef VUE3
 import Vue from 'vue'
@@ -17,6 +18,7 @@ import { createSSRApp } from 'vue'
 export function createApp() {
   const app = createSSRApp(App)
   app.use(Pinia.createPinia())
+  
   return {
     app,
 	Pinia,

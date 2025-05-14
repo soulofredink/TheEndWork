@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
   import{ nextTick, ref,watch } from 'vue'
-  import useCheck from '../hooks/useCheck'
+  import useCheck from '../../hooks/useCheck'
   import { useUserStore } from '../../store/useUserStore';
   import { User } from '../../static/interface/User';
   //user
@@ -107,10 +107,11 @@
       })
       
       if (success) {
+		  uni.setStorageSync('token',true)
 		if(isRemeber.value){
-			uni.setStorageSync('token',true)
 			uni.setStorageSync('userInfo',userStore.currentUser)
 		}
+		else uni.setStorageSync('token',false)
         await nextTick()
         uni.switchTab({ url: "/pages/MyInfo/MyInfo"})
       }

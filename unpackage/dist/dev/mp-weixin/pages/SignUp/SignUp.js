@@ -1,13 +1,14 @@
 "use strict";
 const common_vendor = require("../../common/vendor.js");
+const config = require("../../config.js");
 const pages_SignUp_hooks_useShowHidden = require("./hooks/useShowHidden.js");
-const pages_hooks_useCheck = require("../hooks/useCheck.js");
-const pages_hooks_useDateTime = require("../hooks/useDateTime.js");
+const hooks_useCheck = require("../../hooks/useCheck.js");
+const hooks_useDateTime = require("../../hooks/useDateTime.js");
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "SignUp",
   setup(__props) {
-    let { account, tryPassword, code, inputCode, isVaildUsername, isVaildPassword, isVaildEmail, isVaildCode } = pages_hooks_useCheck.useCheck();
-    let { formattedDate } = pages_hooks_useDateTime.useDateTime();
+    let { account, tryPassword, code, inputCode, isVaildUsername, isVaildPassword, isVaildEmail, isVaildCode } = hooks_useCheck.useCheck();
+    let { formattedDate } = hooks_useDateTime.useDateTime();
     let { isPassword, isView, isPasswordTwo, isViewTwo, show_hide_password, show_hide_passwordTwo } = pages_SignUp_hooks_useShowHidden.useShowHidden();
     let usernameIsFocus = common_vendor.ref(false);
     let passwordIsFocus = common_vendor.ref(false);
@@ -104,7 +105,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
                 success: (res) => {
                   if (res.confirm) {
                     common_vendor.index.request({
-                      url: "http://localhost:8080/sendEmail/" + account.email,
+                      url: config.url0 + "/sendEmail/" + account.email,
                       method: "GET",
                       success: (response) => {
                         if (response.statusCode == 200) {
@@ -149,7 +150,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       if (isOk(isVaildUsername(account.username)) && isOk(isVaildPassword(account.password, tryPassword.value)) && isOk(isVaildEmail(account.email)) && isOk(isVaildCode(code.value, inputCode.value))) {
         account.createDateTime = new Date(formattedDate());
         common_vendor.index.request({
-          url: "http://localhost:8080/signup",
+          url: "https://192.168.43.78:8443/signup",
           method: "POST",
           data: JSON.stringify(account),
           success: (Response) => {
