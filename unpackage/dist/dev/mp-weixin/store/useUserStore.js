@@ -21,7 +21,7 @@ const useUserStore = common_vendor.defineStore("user", {
   actions: {
     async Login(card) {
       const res = await common_vendor.index.request({
-        url: config.url0 + "/signin",
+        url: config.ServerURL + "/signin",
         method: "POST",
         header: {
           "Content-Type": "application/json"

@@ -34,7 +34,7 @@
         <scroll-view scroll-y :style="{ height: swiperHeight + 'rpx' }">
           <!-- 推荐商品 -->
           <view v-if="index === 0">
-            <view v-for="goods in bookList" :key="goods.id" class="goods-item">
+            <view v-for="goods in bookList" :key="goods.id" class="goods-item" @tap="navigateToDetail(goods)">
               <image class="goods-image" :src="goods.image" mode="aspectFill"></image>
               <view class="goods-info">
                 <text class="goods-title">{{ goods.name }}</text>
@@ -45,7 +45,7 @@
 
           <!-- 新发商品 -->
           <view v-if="index === 1">
-            <view v-for="goods in gameList" :key="goods.id" class="goods-item">
+            <view v-for="goods in gameList" :key="goods.id" class="goods-item" @tap="navigateToDetail(goods)">
               <image class="goods-image" :src="goods.image" mode="aspectFill"></image>
               <view class="goods-info">
                 <text class="goods-title">{{ goods.name }}</text>
@@ -56,7 +56,7 @@
 
           <!-- 最近浏览 -->
           <view v-if="index === 2">
-            <view v-for="goods in lifeUtilList" :key="goods.id" class="goods-item">
+            <view v-for="goods in lifeUtilList" :key="goods.id" class="goods-item" @tap="navigateToDetail(goods)">
               <image class="goods-image" :src="goods.image" mode="aspectFill"></image>
               <view class="goods-info">
                 <text class="goods-title">{{ goods.name }}</text>
@@ -92,18 +92,27 @@ const swiperHeight = ref(0)
 const bookList = ref([])
 const gameList = ref([])
 const lifeUtilList = ref([])
+const SearchList = ref([])
 onPullDownRefresh(()=>{
 	fetchBookData()
 	fetchGame()
 	fetchLifeUtil()
-	console.log("ok")
 	uni.stopPullDownRefresh()
 })
+
 // 生命周期
-onLoad(() => {
-	fetchBookData()
-	fetchGame()
-	fetchLifeUtil()
+onLoad(async () => {
+	try {
+	    // 并行加载数据（如果不需要顺序）
+	    await Promise.all([
+	      fetchBookData(),
+	      fetchGame(),
+	      fetchLifeUtil()
+	    ])
+	  } catch (err) {
+	    console.error('数据加载失败:', err)
+	    uni.showToast({ title: '数据加载失败', icon: 'none' })
+	  }
 	const t=uni.getStorageSync("token")
 	if(t==true){
 		userStore.meta.isLoggedin=true
@@ -159,12 +168,54 @@ const test = async (contactId: string) => {
   }
 }
 
-// 搜索相关函数
-const search = (res: any) => {
-  uni.showToast({
-    title: '搜索：' + res.value,
-    icon: 'none'
-  })
+
+const search = async (res: any) => {
+    const keyword = res.value;
+    console.log('执行搜索:', keyword);
+
+
+    const currentCategory = navList.value[currentIndex.value];
+
+    uni.showLoading({ title: `搜索"${keyword}"...` });
+	let random=Date.now()%10;
+    const Res = await uni.request({
+		url:`${ServerURL}/search/goods/${currentCategory}`,
+		method:'POST',
+		header:{
+			'Content-Type': 'application/json'
+		},
+		data:{page:random,size:20,keyword}
+	})
+	
+	if(Res.statusCode === 200){
+		let ResVal = Res.data as {code:number,message:string,data:ListRes};
+		let data = ResVal.data as ListRes
+		SearchList.value = data.list
+		switch(currentCategory.toString()){
+			case "图书":
+			bookList.value = SearchList.value;
+			break;
+			case "游戏":
+			gameList.value = SearchList.value;
+			break
+			case "生活用品":
+			lifeUtilList.value = SearchList.value;
+			break
+		}
+		
+	}else{
+		uni.showToast({
+			title:Res.errMsg
+		})
+	}
+    uni.hideLoading();
+
+
+    if (SearchList.value.length === 0) {
+        uni.showToast({ title: `未找到与"${keyword}"相关的商品`, icon: 'none' });
+    } else {
+         uni.showToast({ title: `找到 ${SearchList.value.length} 条相关商品`, icon: 'none' }); // 搜索成功提示找到多少条
+    }
 }
 
 const input = (res: any) => console.log('input--', res)
@@ -234,6 +285,12 @@ const change = (res: any) => console.log("change", res)
 	  	    uni.showToast({ title: '生活用品商品加载失败', icon: 'none' })
 	    }
 	}
+	const navigateToDetail = (goods : Goods) => {
+			console.log("uid===>",goods)
+			  uni.redirectTo({
+				url: `/pages/goodDetails/goodDetails?image=${goods.image}&name=${goods.name}&price=${goods.price}&description=${goods.description}&userId=${goods.userId}`
+			  })
+		}
 </script>
 
 <style lang="scss" scoped>
@@ -309,7 +366,21 @@ page {
     background: rgba(0,122,255,0.05);
   }
 }
+	
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; // 确保容器占满视口
+}
 
+swiper {
+  flex: 1; // 关键：弹性填充剩余空间
+  width: 100%;
+}
+
+scroll-view {
+  height: 100% !important; // 确保滚动区域占满父容器
+}
 .goods-item {
   display: flex;
   padding: 20rpx;

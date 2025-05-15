@@ -11,6 +11,10 @@ if (!Math) {
   "./pages/communication/communication.js";
   "./pages/communicateDetails/communicateDetails.js";
   "./pages/sell/sell.js";
+  "./pages/goodDetails/goodDetails.js";
+  "./pages/BoughtGoods/BoughtGoods.js";
+  "./pages/PublishedGoods/PublishedGoods.js";
+  "./pages/SoldGoods/SoldGoods.js";
 }
 const _sfc_main = {
   onLaunch: function() {

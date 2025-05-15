@@ -105,7 +105,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
                 success: (res) => {
                   if (res.confirm) {
                     common_vendor.index.request({
-                      url: config.url0 + "/sendEmail/" + account.email,
+                      url: config.ServerURL + "/sendEmail/" + account.email,
                       method: "GET",
                       success: (response) => {
                         if (response.statusCode == 200) {
@@ -150,7 +150,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       if (isOk(isVaildUsername(account.username)) && isOk(isVaildPassword(account.password, tryPassword.value)) && isOk(isVaildEmail(account.email)) && isOk(isVaildCode(code.value, inputCode.value))) {
         account.createDateTime = new Date(formattedDate());
         common_vendor.index.request({
-          url: "https://192.168.43.78:8443/signup",
+          url: "http://192.168.43.78:8080/signup",
           method: "POST",
           data: JSON.stringify(account),
           success: (Response) => {

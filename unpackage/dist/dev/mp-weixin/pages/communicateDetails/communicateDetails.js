@@ -15,19 +15,12 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     const chatId = common_vendor.ref("");
     const username = common_vendor.ref("");
     const avatar = common_vendor.ref("");
-    let websocket = null;
+    let websocket = new script_webSocket.WebSocketUtil(config.WebsocketURL + `${userStore.currentUser.id}`);
     const initWebSocket = () => {
-      var _a;
-      if (!((_a = userStore.currentUser) == null ? void 0 : _a.id))
-        return;
-      websocket = new script_webSocket.websocketUtil(
-        config.url1 + `${userStore.currentUser.id}`,
-        5e3
-      );
-      websocket.getMessage((res) => {
-        common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:73", "有人来消息了：", res.sender);
+      websocket.onMessage((res) => {
+        common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:70", "有人来消息了：", res.sender);
         if (chatStore.sessions.find((s2) => s2.id === res.sender)) {
-          common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:75", "此消息的会话存在，不需要创建新的");
+          common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:72", "此消息的会话存在，不需要创建新的");
         } else
           chatStore.createSession(res.sender);
         const a = Date.now();
@@ -39,7 +32,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           receiver: userStore.currentUser.id,
           timestamp: a
         });
-        common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:87", res);
+        common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:84", res);
       });
     };
     const messages = common_vendor.computed(
@@ -55,12 +48,14 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       if (!inputText.value.trim())
         return;
       chatStore.sendMessage(inputText.value.trim(), chatId.value);
+      const id = userStore.currentUser.id;
       const msg = {
-        sender: userStore.currentUser.id,
+        sender: id,
         message: inputText.value,
         sendTime: Date.now(),
         receiver: chatId.value
       };
+      common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:116", "msg:", msg);
       websocket.send(JSON.stringify(msg));
       inputText.value = "";
       scrollToBottom();
@@ -76,13 +71,8 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       initWebSocket();
       scrollToBottom();
     });
-    common_vendor.onUnmounted(() => {
-      websocket == null ? void 0 : websocket.close();
-      common_vendor.index.__f__("log", "at pages/communicateDetails/communicateDetails.vue:141", "关闭成功");
-      chatStore.clearUnreadCount(chatStore.currentSessionId);
-      chatStore.currentSessionId = "";
-    });
     common_vendor.onLoad((chat) => {
+      userStore.currentUser = common_vendor.index.getStorageSync("userInfo");
       chatId.value = chat.id || "未知ID";
       username.value = chat.username || "匿名用户";
       avatar.value = chat.avatar ? decodeURIComponent(chat.avatar) : "/static/default-avatar.png";

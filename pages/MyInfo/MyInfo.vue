@@ -84,14 +84,15 @@
 	import {onLoad} from '@dcloudio/uni-app'
 	import { User } from '../../static/interface/User'
 	import { useChatStore } from '../../store/chatStore'
+	import { ServerURL,WebsocketURL } from '../../config'
 	let username = ref("请登录");
 	let id = ref('');
 	let userStore = useUserStore()
 	let chatStore=useChatStore()
 	const services = reactive([
-	  { id:1,icon: 'shop', color: '#00C853', label: '我发布的', path: '/pages' },
-	  { id:2,icon: 'cart', color: '#0091EA', label: '我卖出的', path: '/pages' },
-	  { id:3,icon: 'gift', color: '#FF6D00', label: '我买到的', path: '/pages/about_us/about_us' }
+	  { id:1,icon: 'shop', color: '#00C853', label: '我发布的', path: '/pages/PublishedGoods/PublishedGoods'},
+	  { id:2,icon: 'cart', color: '#0091EA', label: '我卖出的', path: '/pages/SoldGoods/SoldGoods'},
+	  { id:3,icon: 'gift', color: '#FF6D00', label: '我买到的', path: '/pages/BoughtGoods/BoughtGoods' }
 	])
 	const settings = reactive([
 	  { id:1,icon: 'gear', color: '#666', label: '账户安全', path: '/pages/security' },
@@ -131,19 +132,18 @@
 	  }
 	}
 	onLoad(()=>{
-			const t=uni.getStorageSync("token")
-			console.log(t)
-			if(t==true){
-				console.log(123)
-				userStore.meta.isLoggedin = true;
-				let userInfo = uni.getStorageSync('userInfo') as User
-				userStore.currentUser= uni.getStorageSync('userInfo') as User
-				username.value = userInfo.username;
-				id.value = userInfo.id;
-			}else{
-				username.value = userStore.currentUser.username
-				id.value = userStore.currentUser.id;
-			}
+		const t=uni.getStorageSync("token")
+		if(t==true){
+			console.log(123)
+			userStore.meta.isLoggedin = true;
+			let userInfo = uni.getStorageSync('userInfo') as User
+			userStore.currentUser= uni.getStorageSync('userInfo') as User
+			username.value = userInfo.username;
+			id.value = userInfo.id;
+		}else{
+			username.value = userStore.currentUser.username
+			id.value = userStore.currentUser.id;
+		}
 	})
 	
 	const handleLogout = () => {

@@ -4,8 +4,8 @@
 			"path": "pages/index/index",
 			"style": {
 				"navigationBarTitleText": "首页",
-				"enablePullDownRefresh": true
-				
+				"enablePullDownRefresh": true,
+				"backgroundColor": "#535353"
 			}
 		},
 		{
@@ -60,6 +60,34 @@
 			"style" : 
 			{
 				"navigationBarTitleText" : "发布"
+			}
+		},
+		{
+			"path" : "pages/goodDetails/goodDetails",
+			"style" : 
+			{
+				"navigationBarTitleText" : "商品详细页"
+			}
+		},
+		{
+			"path" : "pages/BoughtGoods/BoughtGoods",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我买到的"
+			}
+		},
+		{
+			"path" : "pages/PublishedGoods/PublishedGoods",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我发布的"
+			}
+		},
+		{
+			"path" : "pages/SoldGoods/SoldGoods",
+			"style" : 
+			{
+				"navigationBarTitleText" : "我卖出的"
 			}
 		}
 

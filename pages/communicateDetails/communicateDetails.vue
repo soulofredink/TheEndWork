@@ -51,6 +51,7 @@
 	import {storeToRefs} from 'pinia'
 	import websocketUtil from '../../script/webSocket';
 	import { ServerURL,WebsocketURL } from '../../config';
+	import { User } from '../../static/interface/User';
 	const chatStore = useChatStore()
 	const userStore = useUserStore()
 	//uni.setStorageSync('userInfo',userStore.currentUser)
@@ -59,17 +60,13 @@
 	const chatId = ref('')
 	const username = ref('')
 	const avatar = ref('')
-	let websocket: websocketUtil | null = null
+	let websocket = new websocketUtil(WebsocketURL+`${userStore.currentUser.id}`)
 	
 	// 初始化 WebSocket
 	const initWebSocket = () => {
-	  if (!userStore.currentUser?.id) return
+	  //if (!userStore.currentUser?.id) return
 	  
-	websocket = new websocketUtil(
-	    WebsocketURL+`${userStore.currentUser.id}`,
-	    5000
-	)
-	websocket.getMessage((res:any)=>{
+	websocket.onMessage((res:any)=>{
 		console.log("有人来消息了：",res.sender)
 		if (chatStore.sessions.find(s => s.id === res.sender)) {
 			console.log("此消息的会话存在，不需要创建新的")
@@ -109,13 +106,14 @@
 		if (!inputText.value.trim()) return
 		//加入本地
 		chatStore.sendMessage(inputText.value.trim(),chatId.value)
+		const id:string=userStore.currentUser.id
 		const msg: sendMessageTo = {
-		  sender:userStore.currentUser.id,
+		  sender:id,
 		  message: inputText.value,
 		  sendTime: Date.now(),
 		  receiver: chatId.value
 		}
-		//console.log("curid:",chatId.value)
+		console.log("msg:",msg)
 		websocket.send(JSON.stringify(msg))
 		inputText.value = ''
 		scrollToBottom()
@@ -136,14 +134,15 @@
 	  scrollToBottom()
 	})
 	
-	onUnmounted(() => {
+	/*onUnmounted(() => {
 		websocket?.close()
 		console.log("关闭成功")
 		chatStore.clearUnreadCount(chatStore.currentSessionId)
 		chatStore.currentSessionId = ''
-	})
+	})*/
 	
 	onLoad((chat)=>{
+		userStore.currentUser=uni.getStorageSync('userInfo') as User
 		chatId.value = chat.id || '未知ID'
 		username.value = chat.username || '匿名用户'
 		avatar.value = chat.avatar ? decodeURIComponent(chat.avatar) : '/static/default-avatar.png'
@@ -255,3 +254,4 @@
   }
 }
 </style>
+

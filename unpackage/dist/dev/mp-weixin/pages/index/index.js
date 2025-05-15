@@ -2,6 +2,7 @@
 const common_vendor = require("../../common/vendor.js");
 const store_chatStore = require("../../store/chatStore.js");
 const store_useUserStore = require("../../store/useUserStore.js");
+const config = require("../../config.js");
 if (!Array) {
   const _easycom_uni_search_bar2 = common_vendor.resolveComponent("uni-search-bar");
   _easycom_uni_search_bar2();
@@ -13,65 +14,99 @@ if (!Math) {
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "index",
   setup(__props) {
-    const chatStore = store_chatStore.useChatStore();
+    store_chatStore.useChatStore();
     const userStore = store_useUserStore.useUserStore();
-    let searchValue = common_vendor.ref("");
-    let navList = common_vendor.ref(["推荐", "新发", "附近"]);
-    let currentIndex = common_vendor.ref(0);
-    common_vendor.index.getSystemInfoSync();
-    let swiperHeight = common_vendor.ref(0);
+    const searchValue = common_vendor.ref("");
+    const navList = common_vendor.ref(["图书", "游戏", "生活用品"]);
+    const currentIndex = common_vendor.ref(0);
+    const swiperHeight = common_vendor.ref(0);
+    const bookList = common_vendor.ref([]);
+    const gameList = common_vendor.ref([]);
+    const lifeUtilList = common_vendor.ref([]);
     common_vendor.onLoad(() => {
-      const systemInfo2 = common_vendor.index.getWindowInfo();
-      common_vendor.index.__f__("log", "at pages/index/index.vue:72", "index:", userStore.meta.isLoggedin);
-      swiperHeight.value = systemInfo2.windowHeight - 50;
+      fetchBookData();
+      fetchGame();
+      fetchLifeUtil();
+      const t = common_vendor.index.getStorageSync("token");
+      if (t == true) {
+        userStore.meta.isLoggedin = true;
+        userStore.currentUser = common_vendor.index.getStorageSync("userInfo");
+      }
+      const systemInfo = common_vendor.index.getWindowInfo();
+      swiperHeight.value = systemInfo.windowHeight - 50;
+      common_vendor.index.__f__("log", "at pages/index/index.vue:108", "index:", userStore.meta.isLoggedin);
     });
-    function switchTab(index) {
+    const switchTab = (index) => {
       currentIndex.value = index;
-    }
-    function onSwiperChange(e) {
+    };
+    const onSwiperChange = (e) => {
       currentIndex.value = e.detail.current;
-    }
-    function search(res) {
+    };
+    const search = (res) => {
       common_vendor.index.showToast({
         title: "搜索：" + res.value,
         icon: "none"
       });
-    }
-    function input(res) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:94", "input--", res);
-    }
-    function cancel(res) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:98", "cacel", res);
-    }
-    function change(res) {
-      common_vendor.index.__f__("log", "at pages/index/index.vue:102", "change", res);
-    }
-    const test = (contactId) => {
-      chatStore.createSession(contactId);
-      const chat = common_vendor.ref({
-        id: "",
-        username: "",
-        avatar: ""
-      });
+    };
+    const input = (res) => common_vendor.index.__f__("log", "at pages/index/index.vue:163", "input--", res);
+    const cancel = (res) => common_vendor.index.__f__("log", "at pages/index/index.vue:164", "cancel", res);
+    const change = (res) => common_vendor.index.__f__("log", "at pages/index/index.vue:165", "change", res);
+    const fetchBookData = async () => {
       try {
-        const res = common_vendor.index.request({
-          url: `https://192.168.43.78/${contactId}`,
+        let random = Date.now() % 10;
+        const res = await common_vendor.index.request({
+          url: config.ServerURL + "/get/goods/图书",
           method: "POST",
-          data: ""
+          header: {
+            "Content-Type": "application/json"
+          },
+          data: { page: random, size: 20 }
         });
         if (res.statusCode === 200) {
-          common_vendor.index.__f__("log", "at pages/index/index.vue:122", "用户信息获取成功：", res);
-          chat.value.id = res.data.id;
-          chat.value.avatar = res.data.img;
-          chat.value.username = res.data.username;
+          let resVal = res.data;
+          let date = resVal.data;
+          bookList.value = date.list;
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/index.vue:128", "用户信息获取失败:", error);
+        common_vendor.index.showToast({ title: "图书商品加载失败", icon: "none" });
       }
-      chatStore.updatereceiverId(contactId);
-      common_vendor.index.navigateTo({
-        url: `/pages/communicateDetails/communicateDetails?id=${chat.value.id}&username=${chat.value.username}&avatar=${chat.value.avatar}`
-      });
+    };
+    const fetchGame = async () => {
+      try {
+        let random = Date.now() % 10;
+        const res = await common_vendor.index.request({
+          url: config.ServerURL + "/get/goods/游戏",
+          method: "POST",
+          header: {
+            "Content-Type": "application/json"
+          },
+          data: { page: random, size: 20 }
+        });
+        if (res.statusCode === 200) {
+          let resVal = res.data;
+          let date = resVal.data;
+          gameList.value = date.list;
+        }
+      } catch (error) {
+        common_vendor.index.showToast({ title: "游戏商品加载失败", icon: "none" });
+      }
+    };
+    const fetchLifeUtil = async () => {
+      try {
+        let random = Date.now() % 10;
+        const res = await common_vendor.index.request({
+          url: config.ServerURL + "/get/goods/生活用品",
+          method: "POST",
+          data: { page: random, size: 20 }
+        });
+        if (res.statusCode === 200) {
+          let resVal = res.data;
+          let date = resVal.data;
+          lifeUtilList.value = date.list;
+        }
+      } catch (error) {
+        common_vendor.index.showToast({ title: "生活用品商品加载失败", icon: "none" });
+      }
     };
     return (_ctx, _cache) => {
       return {
@@ -79,37 +114,61 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         b: common_vendor.o(input),
         c: common_vendor.o(cancel),
         d: common_vendor.o(change),
-        e: common_vendor.o(($event) => common_vendor.isRef(searchValue) ? searchValue.value = $event : searchValue = $event),
+        e: common_vendor.o(($event) => searchValue.value = $event),
         f: common_vendor.p({
           focus: true,
-          modelValue: common_vendor.unref(searchValue)
+          modelValue: searchValue.value
         }),
-        g: common_vendor.f(common_vendor.unref(navList), (item, index, i0) => {
+        g: common_vendor.f(navList.value, (item, index, i0) => {
           return {
             a: common_vendor.t(item),
             b: index,
-            c: common_vendor.unref(currentIndex) === index ? 1 : "",
+            c: currentIndex.value === index ? 1 : "",
             d: common_vendor.o(($event) => switchTab(index), index)
           };
         }),
-        h: common_vendor.f(common_vendor.unref(navList), (item, index, i0) => {
+        h: common_vendor.f(navList.value, (item, index, i0) => {
           return common_vendor.e({
             a: index === 0
           }, index === 0 ? {
-            b: common_vendor.o(($event) => test("1"), index),
-            c: common_vendor.o(($event) => test("3"), index)
+            b: common_vendor.f(bookList.value, (goods, k1, i1) => {
+              return {
+                a: goods.image,
+                b: common_vendor.t(goods.name),
+                c: common_vendor.t(goods.price),
+                d: goods.id
+              };
+            })
           } : {}, {
-            d: index === 1
-          }, index === 1 ? {} : {}, {
+            c: index === 1
+          }, index === 1 ? {
+            d: common_vendor.f(gameList.value, (goods, k1, i1) => {
+              return {
+                a: goods.image,
+                b: common_vendor.t(goods.name),
+                c: common_vendor.t(goods.price),
+                d: goods.id
+              };
+            })
+          } : {}, {
             e: index === 2
-          }, index === 2 ? {} : {}, {
-            f: index
+          }, index === 2 ? {
+            f: common_vendor.f(lifeUtilList.value, (goods, k1, i1) => {
+              return {
+                a: goods.image,
+                b: common_vendor.t(goods.name),
+                c: common_vendor.t(goods.price),
+                d: goods.id
+              };
+            })
+          } : {}, {
+            g: index
           });
         }),
-        i: common_vendor.unref(swiperHeight) + "rpx",
-        j: common_vendor.unref(currentIndex),
+        i: swiperHeight.value + "rpx",
+        j: currentIndex.value,
         k: common_vendor.o(onSwiperChange),
-        l: common_vendor.unref(swiperHeight) + "rpx"
+        l: swiperHeight.value + "rpx"
       };
     };
   }

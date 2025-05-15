@@ -18,9 +18,9 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     let userStore = store_useUserStore.useUserStore();
     let chatStore = store_chatStore.useChatStore();
     const services = common_vendor.reactive([
-      { id: 1, icon: "shop", color: "#00C853", label: "我发布的", path: "/pages" },
-      { id: 2, icon: "cart", color: "#0091EA", label: "我卖出的", path: "/pages" },
-      { id: 3, icon: "gift", color: "#FF6D00", label: "我买到的", path: "/pages/about_us/about_us" }
+      { id: 1, icon: "shop", color: "#00C853", label: "我发布的", path: "/pages/PublishedGoods/PublishedGoods" },
+      { id: 2, icon: "cart", color: "#0091EA", label: "我卖出的", path: "/pages/SoldGoods/SoldGoods" },
+      { id: 3, icon: "gift", color: "#FF6D00", label: "我买到的", path: "/pages/BoughtGoods/BoughtGoods" }
     ]);
     const settings = common_vendor.reactive([
       { id: 1, icon: "gear", color: "#666", label: "账户安全", path: "/pages/security" },
@@ -55,7 +55,6 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     };
     common_vendor.onLoad(() => {
       const t = common_vendor.index.getStorageSync("token");
-      common_vendor.index.__f__("log", "at pages/MyInfo/MyInfo.vue:135", t);
       if (t == true) {
         common_vendor.index.__f__("log", "at pages/MyInfo/MyInfo.vue:137", 123);
         userStore.meta.isLoggedin = true;

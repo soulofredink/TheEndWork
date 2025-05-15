@@ -8,7 +8,11 @@
     "pages/ProfileSet/ProfileSet",
     "pages/communication/communication",
     "pages/communicateDetails/communicateDetails",
-    "pages/sell/sell"
+    "pages/sell/sell",
+    "pages/goodDetails/goodDetails",
+    "pages/BoughtGoods/BoughtGoods",
+    "pages/PublishedGoods/PublishedGoods",
+    "pages/SoldGoods/SoldGoods"
   ],
   "window": {
     "navigationBarTextStyle": "black",
